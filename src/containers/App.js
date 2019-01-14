@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import './App.css';
-import Person from './Person/Person';
+import classes from './App.css';
+import Persons from '../components/Persons/Persons';
+import Person from '../components/Persons/Person/Person';
+import Cockpit from '../components/Cockpit/Cockpit';
 
 class App extends Component {
 
@@ -26,6 +28,34 @@ class App extends Component {
         age: 25
       }
     ]
+  }
+
+  constructor(props) {
+    super(props);
+
+    console.log('[App.js] Inside Constructor', props);
+  }
+
+  componentWillMount() {
+    console.log('[App.js] Inside Component Will Mount')
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('[UPDATE App.js] Inside shouldComponentUpdate', nextState, nextProps)
+  
+    return true;
+  }
+
+  componentWillUpdate(nextState, nextProps) {
+    console.log('[UPDATE App.js] Inside componenetWillUpdate', nextState, nextProps)
+  }
+
+  componentDidUpdate() {
+    console.log('[UPDATE App.js] Inside componenetDidUpdate')
+  }
+
+  componentDidMount() {
+    console.log('[App.js] Inside Component Did Mount')
   }
 
   togglePersonsHandler = () => {
@@ -81,53 +111,23 @@ class App extends Component {
 
   render() {
 
+    console.log("[App.js] Inside Render")
+
     let persons = null;
 
     if (this.state.showPersons) {
-      persons = (
-        <div>
-          { this.state.persons.map((person, index) => {
-            return  <Person 
-                      onClick={() => this.deletePersonHandler(index)}
-                      onChange={(e) => this.onChangeHandler(e, person.id)}
-                      name={person.name} 
-                      age={person.age} 
-                      key={person.id} />
-          }) }
-        </div>
-      );
-    }
-
-    const style = {
-      backgroundColor: this.state.toggleButtonBackground,
-      color: this.state.toggleButtonColor,
-      border: '1px solid #eee',
-      padding: '10px',
-      boxShadow: '0 3px 4px #ddd',
-      outline: 'none'
-    };
-
-    const classes = [];
-
-    if (this.state.persons.length <= 2) {
-      classes.push('red') // classes = ['red'] 
-    }
-
-    if (this.state.persons.length <= 1) {
-      classes.push('bold'); // classes = ['red', 'bold']
+      persons = <Persons 
+                  persons={this.state.persons}
+                  deleteHandler={this.deletePersonHandler}
+                  changeHandler={this.onChangeHandler} />;
     }
 
     return (
-      <div className="App">
-        <h1>Sup?</h1>
-        <p className={classes.join(' ')}>This is awesome.</p>
-        <div>
-          <button 
-            onClick={this.togglePersonsHandler} 
-            style={style}>
-              Toggle persons
-          </button>
-        </div>
+      <div className={classes.App}>
+        <Cockpit 
+          showPersons={this.state.showPersons}
+          persons={this.state.persons}
+          toggleHandler={this.togglePersonsHandler} />
         { persons }
       </div>
     );
